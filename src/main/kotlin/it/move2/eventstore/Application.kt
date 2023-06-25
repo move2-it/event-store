@@ -1,5 +1,7 @@
 package it.move2.eventstore
 
-fun main(args: Array<String>) {
+import it.move2.eventstore.Bootstrap.queue
 
+fun main() {
+    queue.sub()
 }
