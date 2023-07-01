@@ -6,12 +6,12 @@ import it.move2.eventstore.ports.Queue
 import kotlin.text.Charsets.UTF_8
 
 data class RabbitMQConfiguration(
-        val username: String,
-        val password: String,
-        val host: String,
-        val virtualHost: String,
-        val port: Int,
-        val queue: String
+    val username: String,
+    val password: String,
+    val host: String,
+    val virtualHost: String,
+    val port: Int,
+    val queue: String
 )
 
 class RabbitMQFactory {
@@ -25,24 +25,21 @@ class RabbitMQFactory {
         }
 
         private fun channel(configuration: RabbitMQConfiguration) =
-                connectionFactory(configuration).newConnection().createChannel()
+            connectionFactory(configuration).newConnection().createChannel()
 
         fun queue(configuration: RabbitMQConfiguration, handler: Handler) =
-                RabbitMQ(configuration.queue, channel(configuration), handler)
+            RabbitMQ(configuration.queue, channel(configuration), handler)
     }
 }
 
 class RabbitMQ(
-    private val queue: String,private val channel: Channel, private val handler: Handler,
+    private val queue: String, private val channel: Channel, private val handler: Handler
 ) : Queue {
 
     override fun sub() {
-        val consumer = object: DefaultConsumer(channel) {
+        val consumer = object : DefaultConsumer(channel) {
             override fun handleDelivery(
-                consumerTag: String?,
-                envelope: Envelope?,
-                properties: AMQP.BasicProperties?,
-                body: ByteArray?
+                consumerTag: String?, envelope: Envelope?, properties: AMQP.BasicProperties?, body: ByteArray?
             ) {
                 val json = String(body!!, UTF_8)
                 handler.apply(json)
